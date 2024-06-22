@@ -82,7 +82,7 @@ VERILOG CODE:
        reg   fifo_empty;
       reg [7:0]  fifo_counter;
       reg [3:0]r_ptr, w_ptr;
-      reg [7:0] DPRAM[0:63];
+      reg [7:0] RAM[0:63];
     
       always @(fifo_counter)  
       begin
@@ -109,7 +109,7 @@ VERILOG CODE:
       if (rst)
             data_out <= 0; 
       else if (!fifo_empty && Ren)
-            data_out <= DPRAM[r_ptr] ;
+            data_out <= RAM[r_ptr] ;
       else 
             data_out <= data_out;
       end  
@@ -119,7 +119,7 @@ VERILOG CODE:
       if (!fifo_full && Wen)
          DPRAM[w_ptr] <= data_in;
        else
-         DPRAM[w_ptr] <= DPRAM[w_ptr];
+         DPRAM[w_ptr] <= RAM[w_ptr];
       end 
 
       always @(posedge clk or posedge rst)
