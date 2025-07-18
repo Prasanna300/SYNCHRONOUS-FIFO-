@@ -44,112 +44,60 @@ VERILOG CODE:
 
              
 
-*      `timescale 1ns / 1ps
-       //////////////////////////////////////////////////////////////////////////////////
-       // Company: 
-       // Engineer: 
-      // 
-      // Create Date: 24.05.2024 08:26:14
-      // Design Name: 
-      // Module Name: synchronous fifo
-      // Project Name: 
-      // Target Devices: 
-      // Tool Versions: 
-       // Description: 
-      // 
-      // Dependencies: 
-      // 
-      // Revision:
-      // Revision 0.01 - File Created
-      // Additional Comments:
-      // 
-      //////////////////////////////////////////////////////////////////////////////////
-
-
-        module synchronousfifo(
-       input clk,
-       input rst,
-      input Wen,
-      input Ren,
-      input [7:0] data_in,
-       output [7:0] data_out,
-      output fifo_full,
-      output fifo_empty,
-      output [7:0] fifo_counter
-       );
-      reg [7:0] data_out;
-      reg   fifo_full;
-       reg   fifo_empty;
-      reg [7:0]  fifo_counter;
-      reg [3:0]r_ptr, w_ptr;
-      reg [7:0] RAM[0:63];
-    
-      always @(fifo_counter)  
-      begin
-         fifo_full <= (fifo_counter == 63);
-         fifo_empty <= (fifo_counter == 0);
-       end
-
-      always @(posedge clk or posedge rst)
-      begin
-      if (rst)
-           fifo_counter <= 0;
-      else if ((!fifo_full && Wen) && (!fifo_empty && Ren))
-            fifo_counter <= fifo_counter ;
-      else if (!fifo_full && Wen)
-           fifo_counter <= fifo_counter + 1;
-      else if (!fifo_empty && Ren)
-           fifo_counter <= fifo_counter - 1;
-      else
-           fifo_counter <= fifo_counter;
-      end
-
-      always @(posedge clk or posedge rst)
-      begin   
-      if (rst)
-            data_out <= 0; 
-      else if (!fifo_empty && Ren)
-            data_out <= RAM[r_ptr] ;
-      else 
-            data_out <= data_out;
-      end  
-
-       always @(posedge clk )
-      begin
-      if (!fifo_full && Wen)
-         DPRAM[w_ptr] <= data_in;
-       else
-         DPRAM[w_ptr] <= RAM[w_ptr];
-      end 
-
-      always @(posedge clk or posedge rst)
-      begin
-      if (rst)
-      begin
-         w_ptr <= 0;
-         r_ptr <= 0;
-      end
-
+*      
+module fifo_sync
    
-      else 
+    #( parameter FIFO_DEPTH = 8,
+	   parameter DATA_WIDTH = 32)
+   
+	(input clk, 
+     input rst,
+     input cs,      
+     input wr_en, 
+     input rd_en, 
+     input [DATA_WIDTH-1:0] data_in, 
+     output reg [DATA_WIDTH-1:0] data_out, 
+	 output empty,
+	 output full); 
+
+  localparam FIFO_DEPTH_LOG = $clog2(FIFO_DEPTH);
+	
+   
+  reg [DATA_WIDTH-1:0] fifo [0:FIFO_DEPTH-1];
+	
+	
+  reg [FIFO_DEPTH_LOG:0] write_pointer;
+  reg [FIFO_DEPTH_LOG:0] read_pointer;
+
+
+    always @(posedge clk or negedge rst) 
       begin
-      if (!fifo_full && Wen)
-          w_ptr <= w_ptr + 1;
-      else 
-          w_ptr = w_ptr; 
-       end
+      if(!rst)
+		    write_pointer <= 0;
+      else if (cs && wr_en && !full) begin
+          fifo[write_pointer[FIFO_DEPTH_LOG-1:0]] <= data_in;
+	       write_pointer <= write_pointer + 1'b1;
+      end
+      end
+  
 
-    
+	always @(posedge clk or negedge rst) 
       begin
-      if (!fifo_empty && Ren)
-        r_ptr <= r_ptr + 1;
-      else
-        r_ptr <= r_ptr;
-       end       
-       end
-      endmodule
+	    if(!rst)
+		    read_pointer <= 0;
+      else if (cs && rd_en && !empty) begin
+          	data_out <= fifo[read_pointer[FIFO_DEPTH_LOG-1:0]];
+	        read_pointer <= read_pointer + 1'b1;
+      end
+	end
+	
+	
+    assign empty = (read_pointer == write_pointer);
+	assign full  = (read_pointer == {~write_pointer[FIFO_DEPTH_LOG], write_pointer[FIFO_DEPTH_LOG-1:0]});
 
-
+  
+ 
+endmodule
 
 
 SCHEMATIC OF SYNCRONOUS FIFO:
