@@ -101,8 +101,8 @@ VERILOG CODE:
 
 
 SCHEMATIC OF SYNCRONOUS FIFO:
+<img width="1493" height="800" alt="Screenshot 2025-07-18 120200" src="https://github.com/user-attachments/assets/52fa4ffa-387c-4482-89c2-04f855723389" />
 
-![image](https://github.com/Prasanna300/SYNCHRONOUS-FIFO/assets/167746764/34d8dfb3-1839-4587-bb1e-71bc6597ec96)
 
 TEST BENCH FOR VERIFICATION :
 
