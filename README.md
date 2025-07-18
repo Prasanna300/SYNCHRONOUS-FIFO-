@@ -215,4 +215,7 @@ TEST BENCH FOR VERIFICATION :
         $dumpvars(0, tb_fifo_sync);
      end
      endmodule
+SIMULATION OUTPUT :
+
+<img width="1572" height="839" alt="Screenshot 2025-07-18 115025" src="https://github.com/user-attachments/assets/cf31af7a-cb00-4e58-92de-f27c0f509300" />
 
