@@ -39,8 +39,8 @@ The data can be taken out or read from FIFO at every posedge of the clock based 
 
 VERILOG CODE:
 
-
-             the entire synchronous fifo was designed using vivado EDA tool by behavioral modelling method.
+****
+**  the entire synchronous fifo was designed using vivado EDA tool by behavioral modelling method.******
 
              
 
