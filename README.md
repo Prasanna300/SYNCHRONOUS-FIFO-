@@ -60,14 +60,14 @@ module fifo_sync
 	 output empty,
 	 output full); 
 
-  localparam FIFO_DEPTH_LOG = $clog2(FIFO_DEPTH);
+    localparam FIFO_DEPTH_LOG = $clog2(FIFO_DEPTH);
 	
    
-  reg [DATA_WIDTH-1:0] fifo [0:FIFO_DEPTH-1];
+    reg [DATA_WIDTH-1:0] fifo [0:FIFO_DEPTH-1];
 	
 	
-  reg [FIFO_DEPTH_LOG:0] write_pointer;
-  reg [FIFO_DEPTH_LOG:0] read_pointer;
+      reg [FIFO_DEPTH_LOG:0] write_pointer;
+      reg [FIFO_DEPTH_LOG:0] read_pointer;
 
 
     always @(posedge clk or negedge rst) 
